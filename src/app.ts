@@ -12,6 +12,9 @@ const app = express();
 // Used to parse incoming request bodies with JSON payloads.
 app.use(express.json());
 
+// Used to set user object on req.locals.user if a valid access token is provided.
+// Otherwise, if the access token is expired and a valid refresh token is provided,
+// a new access token is issued and set on the response header.
 app.use(deserializeUser);
 
 app.listen(port, async () => {

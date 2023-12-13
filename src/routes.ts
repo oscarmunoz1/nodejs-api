@@ -15,7 +15,11 @@ function routes(app: Express) {
   app.get("/healthcheck", (req: Request, res: Response) => {
     res.sendStatus(200);
   });
+
+  // Users
   app.post("/api/users", validateResource(createUserSchema), createUserHandler);
+
+  // Sessions
   app.post(
     "/api/sessions",
     validateResource(createSessionSchema),
