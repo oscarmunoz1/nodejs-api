@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
+import { createUser, findUsers } from "../service/user.service";
 
 import { CreateUserInput } from "../schema/user.schema";
-import { createUser } from "../service/user.service";
 import logger from "../utils/logger";
 import { omit } from "lodash";
 
@@ -16,4 +16,9 @@ export async function createUserHandler(
     logger.error(e);
     return res.status(409).send(e.message);
   }
+}
+
+export async function getUsersHandler(req: Request, res: Response) {
+  const users = await findUsers();
+  return res.send(users);
 }

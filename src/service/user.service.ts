@@ -1,4 +1,4 @@
-import UserModel, { UserDocument, UserInput } from "../models/user.model";
+import { UserDocument, UserInput, UserModel } from "../models/user.model";
 
 import { FilterQuery } from "mongoose";
 import { omit } from "lodash";
@@ -8,6 +8,15 @@ export async function createUser(input: UserInput) {
     const user = await UserModel.create(input);
 
     return omit(user.toJSON(), "password");
+  } catch (e: any) {
+    throw new Error(e);
+  }
+}
+
+export async function findUsers() {
+  try {
+    const users = await UserModel.find();
+    return users;
   } catch (e: any) {
     throw new Error(e);
   }

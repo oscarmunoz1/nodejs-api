@@ -1,6 +1,10 @@
+import { CompanyDocument, EstablishmentDocument } from "./company.model";
+
 import bcrypt from "bcrypt";
 import config from "config";
 import mongoose from "mongoose";
+
+// User model
 
 export interface UserDocument extends mongoose.Document {
   email: string;
@@ -54,6 +58,33 @@ userSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
 };
 
-const UserModel = mongoose.model<UserDocument>("User", userSchema);
+export const UserModel = mongoose.model<UserDocument>("User", userSchema);
 
-export default UserModel;
+// WorksIn model
+
+export interface WorksInDocument extends mongoose.Document {
+  user: UserDocument["_id"];
+  company: CompanyDocument["_id"];
+  role: string;
+  establishmentsInCharge: EstablishmentDocument["_id"][];
+}
+
+const worksInSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "UserModel",
+    required: true,
+  },
+  company: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "CompanyModel",
+    required: true,
+  },
+  role: { type: String, enum: ["CA", "DS", "DW", "DE"], required: true },
+  establishmentsInCharge: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "EstablishmentModel" },
+  ],
+  roleGroup: { type: mongoose.Schema.Types.ObjectId, ref: "GroupModel" },
+});
+
+export const WorksInModel = mongoose.model("WorksIn", worksInSchema);
