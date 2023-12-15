@@ -1,4 +1,3 @@
-import { Express, Request, Response } from "express";
 import {
   createCompanyHandler,
   createEstablishmentHandler,
@@ -6,6 +5,8 @@ import {
   getCompanyEmployeesHandler,
   getCompanyHandler,
   getEstablishmentHandler,
+  getEstablishmentProductionsHandler,
+  getEstablishmentProductsHandler,
   getEstablishmentsHandler,
   updateCompanyHandler,
   updateEstablishmentHandler,
@@ -25,6 +26,7 @@ import {
   getUserSessionsHandler,
 } from "./controller/session.controller";
 
+import { Express } from "express";
 import { createSessionSchema } from "./schema/session.schema";
 import { createUserSchema } from "./schema/user.schema";
 import { createUserSessionHandler } from "./controller/session.controller";
@@ -84,6 +86,16 @@ function routes(app: Express) {
     "/api/companies/:companyId/establishments/:establishmentId",
     [requireUser, validateResource(partialUpdateEstablishmentSchema)],
     updateEstablishmentHandler
+  );
+  app.get(
+    "/api/companies/:companyId/establishments/:establishmentId/products",
+    requireUser,
+    getEstablishmentProductsHandler
+  );
+  app.get(
+    "/api/companies/:companyId/establishments/:establishmentId/productions",
+    requireUser,
+    getEstablishmentProductionsHandler
   );
 }
 

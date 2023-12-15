@@ -15,6 +15,8 @@ import {
 } from "../service/company.service";
 
 import { EstablishmentModel } from "../models/company.model";
+import { ProductModel } from "../models/product.model";
+import { ProductionModel } from "../models/production.model";
 import { WorksInModel } from "../models/user.model";
 import logger from "../utils/logger";
 
@@ -154,6 +156,64 @@ export async function getEstablishmentHandler(
   }
 
   return res.send(establishment);
+}
+
+export async function getEstablishmentProductsHandler(
+  req: Request<UpdateEstablishmentInput["params"]>,
+  res: Response
+) {
+  const companyId = req.params.companyId;
+
+  if (!companyId) {
+    return res.sendStatus(404);
+  }
+
+  const establishment = await EstablishmentModel.findOne({
+    _id: req.params.establishmentId,
+    company: companyId,
+  });
+
+  if (!establishment) {
+    return res.sendStatus(404);
+  }
+
+  const products = await ProductModel.find({
+    "production.parcel.establishment": req.params.establishmentId,
+    "production.published": true,
+    ...(req.params.parcelId && {
+      "production.parcel._id": req.params.parcelId,
+    }),
+  });
+
+  return res.send(products);
+}
+
+export async function getEstablishmentProductionsHandler(
+  req: Request<UpdateEstablishmentInput["params"]>,
+  res: Response
+) {
+  const companyId = req.params.companyId;
+
+  if (!companyId) {
+    return res.sendStatus(404);
+  }
+
+  const establishment = await EstablishmentModel.findOne({
+    _id: req.params.establishmentId,
+    company: companyId,
+  });
+
+  if (!establishment) {
+    return res.sendStatus(404);
+  }
+
+  const productions = await ProductionModel.find({
+    "parcel.establishment": req.params.establishmentId,
+    published: true,
+    ...(req.params.parcelId && { "parcel._id": req.params.parcelId }),
+  });
+
+  return res.send(productions);
 }
 
 export async function updateEstablishmentHandler(

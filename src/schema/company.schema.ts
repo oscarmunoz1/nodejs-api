@@ -117,6 +117,7 @@ const establishmentParams = {
     establishmentId: string({
       required_error: "EstablishmentId is required",
     }),
+    parcelId: string().optional(),
   }),
 };
 
